@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Drawing application</title>
+    <link
+      rel="stylesheet"
+      href="style.css"
+      type="text/css"
+      media="screen"
+      title="no title"
+      charset="utf-8"
+    />
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>SPRITR.GITHUB.IO</h1>
+        <p>By: <a href="https://github.com/weglon">Weglon</a></p>
+      </div>
+    </header>
+    <section id="main-container">
+      <aside id="toolbox-container">
+        <button onclick="createNewImageOverlay()">new</button>
+        <button onclick="save()">save</button>
+        <button onclick="load()">load</button>
+        <button onclick="setBackground()">set bg</button>
+        <input onchange="setColor(this.value)" type="color" value="#FFFFFF" />
+      </aside>
+      <div id="canvas-container">
+        <canvas width="850" height="850" id="drawing-canvas"></canvas>
+      </div>
+    </section>
+    <footer>
+      <div>
+        <p>
+          Created 2022 by <a href="https://github.com/weglon">Weglon</a>. The
+          colorscheme used is
+          <a href="https://github.com/morhetz/gruvbox">Gruvbox by morhetz</a>.
+          And the fonts are
+          <a href="https://fonts.google.com/specimen/Silkscreen"
+            >Silkscreen by Jason Kottke</a
+          >
+          and
+          <a href="https://fonts.google.com/specimen/Press+Start+2P"
+            >Press Start 2P by CodeMan38</a
+          >.
+        </p>
+      </div>
+    </footer>
+    <script src="main.js"></script>
+  </body>
+</html>
