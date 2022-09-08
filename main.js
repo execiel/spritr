@@ -75,11 +75,14 @@ function createNewImageOverlay() {
 
 function save() {
   localStorage.setItem("SavedImage", JSON.stringify(cells));
+  localStorage.setItem("SavedScale", scaleX);
 }
 
 function load() {
   const saved = localStorage.getItem("SavedImage");
+  const newScale = localStorage.getItem("SavedScale");
   if (!saved) return;
+  scaleX = scaleY = newScale;
   cells = JSON.parse(saved);
 }
 
