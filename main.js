@@ -1,11 +1,16 @@
+///////////////////
+//  Main script  //
+///////////////////
+
+
 const canvas = document.querySelector("#drawing-canvas");
 const context = canvas.getContext("2d");
 const mouse = { x: 0, y: 0, down: false };
 
+let image_id = null;
 let cells = [];
 let interval = null;
-let scaleX = 0;
-let scaleY = 0;
+let scale = 0;
 let currentColor = "#ffffff";
 let overlay = null;
 
@@ -18,11 +23,13 @@ canvas.addEventListener("mousedown", (evt) =>
 canvas.addEventListener("mouseup", () => (mouse.down = false));
 canvas.addEventListener("mousemove", (evt) => {
   const rect = canvas.getBoundingClientRect();
-  mouse.x = Math.floor((evt.clientX - rect.left) / scaleX);
-  mouse.y = Math.floor((evt.clientY - rect.top) / scaleY);
+  mouse.x = Math.floor((evt.clientX - rect.left) / scale);
+  mouse.y = Math.floor((evt.clientY - rect.top) / scale);
 });
 
+// Init function gets called every time new image is created
 function init(size) {
+  // Remove overlay
   if (overlay) overlay.remove();
 
   // Remove prevoius interval and cells
@@ -31,7 +38,10 @@ function init(size) {
     cells = [];
   }
 
-  // create cells
+  // Set new id
+  image_id = Math.random();
+
+  // create the cells
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       cells.push({
@@ -42,9 +52,8 @@ function init(size) {
     }
   }
 
-  // Get relative size for each pixel
-  scaleX = canvas.width / size;
-  scaleY = canvas.height / size;
+  // Get the scale
+  scale = canvas.width / size;
 
   // start update loop
   interval = setInterval(() => {
@@ -54,42 +63,32 @@ function init(size) {
       if (mouse.down && mouse.x == c.x && mouse.y == c.y)
         c.color = currentColor;
       context.fillStyle = c.color;
-      context.fillRect(c.x * scaleX, c.y * scaleY, scaleX, scaleY);
+      context.fillRect(c.x * scale, c.y * scale, scale, scale);
     }
   }, 1000 / 60);
 }
 
 // Button and input functions
-
 function setColor(color) {
   currentColor = color;
 }
 
-function createNewImageOverlay() {
+function createOverlay(html) {
   overlay = document.createElement("div");
   overlay.id = "overlay";
-  overlay.innerHTML =
-    "<div><h3>Select size</h3><div><button onclick='init(64)'>64x64</button><button onclick='init(32)'>32x32</button><button onclick='init(16)'>16x16</button><button onclick='init(8)'>8x8</button></div></div>";
+  overlay.innerHTML = html;
   document.body.append(overlay);
 }
 
-function save() {
-  localStorage.setItem("SavedImage", JSON.stringify(cells));
-  localStorage.setItem("SavedScale", scaleX);
-}
-
-function load() {
-  const saved = localStorage.getItem("SavedImage");
-  const newScale = localStorage.getItem("SavedScale");
-  if (!saved) return;
-  scaleX = scaleY = newScale;
-  cells = JSON.parse(saved);
+function createNewImageOverlay() {
+  createOverlay(
+    "<div><h3>Select size</h3><div><button onclick='init(64)'>64x64</button><button onclick='init(32)'>32x32</button><button onclick='init(16)'>16x16</button><button onclick='init(8)'>8x8</button></div></div>"
+  );
 }
 
 function setBackground() {
   for (let i in cells) {
     const c = cells[i];
     c.color = currentColor;
-    console.log(c.color);
   }
 }

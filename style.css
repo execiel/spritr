@@ -1,8 +1,8 @@
 /*
  * Credits:
  *  fonts:
- *    Silkscreen: https://fonts.google.com/specimen/Silkscreen?category=Display
- *    Press Start 2P: https://fonts.google.com/specimen/Press+Start+2P?category=Display&preview.text=spritr.github.io&preview.text_type=custom
+ *    Silkscreen: https://fonts.google.com/specimen/Silkscreen
+ *    Press Start 2P: https://fonts.google.com/specimen/Press+Start+2P
  *  colors:
  *    gruvbox: https://github.com/morhetz/gruvbox
  */
@@ -162,6 +162,7 @@ footer > div {
   background-color: var(--main-bg);
   padding: 25px;
   border-radius: 10px;
+  width: 50%;
 }
 
 input[type="color"] {
