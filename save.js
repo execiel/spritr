@@ -2,9 +2,28 @@
 //  Handles saving and loading  //
 //////////////////////////////////
 
+// TODO: add proper loading and saving of the name
+
+function createSaveOverlay() {
+  const html =
+    "<div><h3>Choose a name for your artwork!</h3><input type='text' id='save-in' placeholder='1st Masterpiece'></input><button onclick='save()'>Save!</button></div>";
+  createOverlay(html);
+}
+
 // Save to local storage
 function save() {
+  // Remove the save overlay
   const prevSaves = localStorage.getItem("Saves");
+
+  // Grab the name if given, else name it unnamed
+  let name = document.getElementById("save-in").value;
+  if (name == "") name = "unnamed";
+
+  // The object to add to the save array
+  const currentSave = { name: name, id: image_id, scale: scale, cells: cells };
+
+  // Remove overlay
+  if (overlay) overlay.remove();
 
   if (prevSaves) {
     const saves = JSON.parse(prevSaves);
@@ -15,18 +34,19 @@ function save() {
 
       // If it exists change it
       if (s.id == image_id) {
-        saves[i] = { id: image_id, scale: scale, cells: cells };
+        saves[i] = currentSave;
         localStorage.setItem("Saves", JSON.stringify(saves));
         return;
       }
     }
 
-    console.log("This shouldnt get called");
-    saves.push({ id: image_id, scale: scale, cells: cells });
+    // If it doesn't exist
+    saves.push(currentSave);
     localStorage.setItem("Saves", JSON.stringify(saves));
   } else {
+    // Create new save array if none exists
     const saves = [];
-    saves.push({ scale: scale, cells: cells });
+    saves.push(currentSave);
     localStorage.setItem("Saves", JSON.stringify(saves));
   }
 }
@@ -40,7 +60,8 @@ function load() {
     let html = "<div><h3>Select previous save</h3><div>";
     const saves = JSON.parse(prevSaves);
     for (let i in saves) {
-      html += `<button onclick="loadImage(${i})">Save ${i}</button>`;
+      s = saves[i];
+      html += `<button onclick="loadImage(${i})">${s.name}</button>`;
     }
     html += "</div></div>";
     createOverlay(html);

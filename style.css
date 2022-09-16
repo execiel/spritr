@@ -165,6 +165,12 @@ footer > div {
   width: 50%;
 }
 
+input {
+  padding: 15px;
+  font-family: var(--text-font);
+  border: none;
+}
+
 input[type="color"] {
   -webkit-appearance: none;
   border: none;
