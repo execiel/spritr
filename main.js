@@ -2,29 +2,46 @@
 //  Main script  //
 ///////////////////
 
-
 const canvas = document.querySelector("#drawing-canvas");
 const context = canvas.getContext("2d");
 const mouse = { x: 0, y: 0, down: false };
 
+// Image properties
 let image_id = null;
 let cells = [];
-let interval = null;
 let scale = 0;
 let currentColor = "#ffffff";
+
+// Loop and overlay objects
 let overlay = null;
+let interval = null;
+
+// Keeps track of strokes for undo
+let strokes = [];
+let currentStroke = 0;
 
 init(16);
 
 // Get mouse state and coords
-canvas.addEventListener("mousedown", (evt) =>
-  evt.button == 0 ? (mouse.down = true) : (mouse.down = false)
-);
+canvas.addEventListener("mousedown", (evt) => {
+  if (evt.button == 0) {
+    mouse.down = true;
+    currentStroke++;
+    strokes[currentStroke] = [];
+  }
+});
 canvas.addEventListener("mouseup", () => (mouse.down = false));
 canvas.addEventListener("mousemove", (evt) => {
   const rect = canvas.getBoundingClientRect();
   mouse.x = Math.floor((evt.clientX - rect.left) / scale);
   mouse.y = Math.floor((evt.clientY - rect.top) / scale);
+});
+
+// Call undo if ctrl+z is invoked
+document.addEventListener("keydown", (evt) => {
+  if (evt.keyCode == 90 && evt.ctrlKey) {
+    undo();
+  }
 });
 
 // Init function gets called every time new image is created
@@ -60,12 +77,26 @@ function init(size) {
     // loop through and draw each cell
     for (let i in cells) {
       const c = cells[i];
-      if (mouse.down && mouse.x == c.x && mouse.y == c.y)
+      if (mouse.down && mouse.x == c.x && mouse.y == c.y) {
+        // Store prevoius color of the pixel, for undo function
+        if (c.color != currentColor)
+          strokes[currentStroke].push({ index: i, color: c.color });
+
         c.color = currentColor;
+      }
       context.fillStyle = c.color;
       context.fillRect(c.x * scale, c.y * scale, scale, scale);
     }
   }, 1000 / 60);
+}
+
+function undo() {
+  // Grab current strokes affected cells and change them to their last color
+  for (let i in strokes[currentStroke]) {
+    const cell = strokes[currentStroke][i];
+    cells[cell.index].color = cell.color;
+  }
+  currentStroke--;
 }
 
 // Button and input functions
