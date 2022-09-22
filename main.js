@@ -37,10 +37,28 @@ canvas.addEventListener("mousemove", (evt) => {
   mouse.y = Math.floor((evt.clientY - rect.top) / scale);
 });
 
-// Call undo if ctrl+z is invoked
 document.addEventListener("keydown", (evt) => {
-  if (evt.keyCode == 90 && evt.ctrlKey) {
+  // Ctrl + Z or Shift + Z for undo
+  if (
+    (evt.keyCode == 90 && evt.ctrlKey) ||
+    (evt.keyCode == 90 && evt.shiftKey)
+  ) {
     undo();
+  }
+
+  // Shift + O for saving
+  if (evt.keyCode == 79 && evt.shiftKey) {
+    load();
+  }
+
+  // Shift + S for saving
+  if (evt.keyCode == 83 && evt.shiftKey) {
+    createSaveOverlay();
+  }
+
+  // Shift + N for new image
+  if (evt.keyCode == 78 && evt.shiftKey) {
+    createNewImageOverlay();
   }
 });
 
